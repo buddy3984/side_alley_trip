@@ -1,0 +1,63 @@
+esphome:
+  name: trip_front_yard_wifi
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: "mrTwig"
+  password: "mangofish7"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Trip Front Yard Wifi"
+    password: "gHn8VwIXKP5k"
+
+# Enable logging
+logger:
+
+ota:
+
+# Enable Web server
+#web_server:
+#  port: 80
+  
+mqtt:
+  broker: 192.168.1.39
+  username: smartthingsMqtt
+  password: 7410zz00
+  log_topic: trip_front_yard_wifi
+
+output:
+  - platform: esp8266_pwm
+    id: onboardLed
+    pin:
+      number: D4
+      inverted: true
+
+light:
+ - platform: monochromatic
+   name: "onboardLed"
+   output: onboardLed
+   id: led
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D2
+      mode: INPUT_PULLUP
+    name: "trip_front_yard_wifi_motion"
+    id: fuckMyTripFrontWifiMotion
+    device_class: motion
+    on_press:
+      then:
+        - delay:
+            seconds: 3
+        - light.turn_off: led
+    on_release:
+      then:
+        - light.turn_on: led
+  - platform: gpio
+    pin:
+      number: D7
+    name: "alley_gate_motion"
+    device_class: motion
